@@ -35,3 +35,7 @@ data/weights_pca_byModels.pkl
 data/weights_pca_tot.pkl
 models/__pycache__/data_loader.cpython-310.pyc
 data/MIROC-ES2L_tas_monthly.nc
+weights/Anchor_weights_stability_n1000_coarse12.pkl
+Results/maps_R2_anchor100_stability_coarse_12_MIROC6.pdf
+Results/R2_anchor100_stability_coarse12.pdf
+Results/maps_R2_ridge_stability_coarse_12_CanESM5.pdf
