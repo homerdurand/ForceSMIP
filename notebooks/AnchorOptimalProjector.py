@@ -20,6 +20,7 @@ class AnchorOptimalProjection:
         - A (numpy.ndarray): Input matrix for fitting the model.
         """
         n = A.shape[0]
+        self.P_A = A @ np.linalg.inv(A.T @ A) @ A.T
         if self.gamma == 1:
             # If gamma is 1, set AOP to the identity matrix
             self.AOP = np.identity(n)
@@ -44,10 +45,18 @@ class AnchorOptimalProjection:
         Returns:
         - numpy.ndarray or tuple of numpy.ndarray: Transformed matrix/matrix pair in the Anchor optimal space.
         """
-        if Y is None:
-            return self.AOP @ X
-        else:
-            return self.AOP @ X, self.AOP @ Y
+        if isinstance(self.gamma, list):
+            Xs, Ys = {}, {}
+            n = X.shape[0]
+            for gamma in self.gamma:
+                AOP = np.identity(n) + (np.sqrt(self.gamma) - 1) * self.P_A
+                Xs[gamma] = AOP @ X
+                Ys[gamma] = AOP @ Y
+            return Xs, Ys
+        else :
+            AOP = np.identity(n) + (np.sqrt(self.gamma) - 1) * self.P_A
+            return AOP @ X, AOP @ Y
+            
     
     def fit_transform(self, A, X, Y=None):
         """
