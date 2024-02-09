@@ -21,18 +21,7 @@ class AnchorOptimalProjection:
         """
         n = A.shape[0]
         self.P_A = A @ np.linalg.inv(A.T @ A) @ A.T
-        if self.gamma == 1:
-            # If gamma is 1, set AOP to the identity matrix
-            self.AOP = np.identity(n)
-        else:
-            # Calculate the projection matrix based on gamma value
-            P_A = A @ np.linalg.inv(A.T @ A) @ A.T
-            if self.gamma == 'IV':
-                # If gamma is 'IV', set AOP to the projection matrix P_A
-                self.AOP = P_A
-            else:
-                # Set AOP using the specified formula
-                self.AOP = np.identity(n) + (np.sqrt(self.gamma) - 1) * P_A
+        
         
     def transform(self, X, Y=None):
         """
@@ -49,7 +38,7 @@ class AnchorOptimalProjection:
             Xs, Ys = {}, {}
             n = X.shape[0]
             for gamma in self.gamma:
-                AOP = np.identity(n) + (np.sqrt(self.gamma) - 1) * self.P_A
+                AOP = np.identity(n) + (np.sqrt(gamma) - 1) * self.P_A
                 Xs[gamma] = AOP @ X
                 Ys[gamma] = AOP @ Y
             return Xs, Ys
