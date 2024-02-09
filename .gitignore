@@ -39,3 +39,6 @@ weights/Anchor_weights_stability_n1000_coarse12.pkl
 Results/maps_R2_anchor100_stability_coarse_12_MIROC6.pdf
 Results/R2_anchor100_stability_coarse12.pdf
 Results/maps_R2_ridge_stability_coarse_12_CanESM5.pdf
+Results/maps_R2_anchor5_stability_coarse_12_CanESM5.pdf
+Results/maps_R2_anchor5_stability_coarse_12_MIROC6.pdf
+Results/R2_anchor5_stability_coarse12.pdf
