@@ -77,3 +77,4 @@ weights/Anchor_weights_stability_n200_coarse72.pkl
 weights/Anchor_weights_stability_n2500_coarse12.pkl
 Notes/pre-ANM-extrapolation.jpeg
 Notes/Notes_causality_in_extremes.md
+data/CanESM5_tas_coarsen4.nc
