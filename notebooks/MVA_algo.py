@@ -85,6 +85,7 @@ class OPLS:
         self.alpha = reg
         self.ncp = n_components
         self.coef_ = None
+        self.intercept_ = None
         self.weight_ = None
         self.eig_ = None
 
@@ -113,9 +114,13 @@ class OPLS:
             None
         """
         if self.alpha != 0:
-            self.coef_ = Ridge(alpha=self.alpha).fit(X_transform, Y).coef_.T
+            ridge = Ridge(alpha=self.alpha).fit(X_transform, Y)
+            self.coef_ = ridge.coef_.T
+            self.intercept_ = ridge.intercept_.T
         else:
-            self.coef_ = LinearRegression().fit(X_transform, Y).coef_.T
+            lr =  LinearRegression().fit(X_transform, Y)
+            self.coef_ = lr.coef_.T
+            self.intercept_ = lr.intercept_.T
         if self.ncp is not None:
             self.coef_ = self.coef_[:self.ncp, :]
 
@@ -186,6 +191,112 @@ class OPLS:
         """
         X_transform = self.transform(X)
         return X_transform @ self.coef_
+
+    def score(self, X, Y):
+        """
+        Calculate the R^2 score of the model.
+
+        Parameters:
+            X (array-like): Input data of shape (n_samples, n_features).
+            Y (array-like): Target data of shape (n_samples,).
+
+        Returns:
+            score (float): R^2 score.
+        """
+        Y_pred = self.predict(X)
+        return r2_score(Y, Y_pred)
+
+
+class OPLS2:
+    def __init__(self, solver='GEV', n_components=5, reg=0):
+        """
+        Initializes the OPLS model.
+
+        Parameters:
+            solver (str): The solver to use for coefficient estimation ('GEV' or 'ElasticNet').
+            ncp (int): Number of components to keep. If None, all components are kept.
+            alpha (float): Regularization parameter for ElasticNet. If 0, Linear Regression is used.
+        """
+        self.solver = solver
+        self.reg = reg
+        self.ncp = n_components
+        self.U_ = None
+        self.intercept_ = None
+        self.V_ = None
+        self.eig_ = None
+
+    def transform(self, X):
+        """
+        Transform the input data X using the learned weight matrix.
+
+        Parameters:
+            X (array-like): Input data of shape (n_samples, n_features).
+
+        Returns:
+            X_transformed (array-like): Transformed data of shape (n_samples, n_components).
+        """
+        X_transformed = X @ self.U_
+        return X_transformed
+
+
+    def fit(self, X, Y):
+        """
+        Fit the OPLS model to the given input and target data.
+
+        Parameters:
+            X (array-like): Input data of shape (n_samples, n_features).
+            Y (array-like): Target data of shape (n_samples,).
+            max_iter (int): Maximum number of iterations for optimization.
+            delta (float): Convergence criterion.
+
+        Returns:
+            None
+        """
+        print("Computing C_XY!")
+        C_XY = X.T @ Y 
+        print("Computing C_XX inverse!")
+        C_XX = X.T @ X
+        C_XX_inv = np.linalg.inv(C_XX + self.reg * np.identity(C_XX.shape[0]))
+        print("Doing EVD!")
+        u, v = scipy.sparse.linalg.eigs(C_XY.T @ C_XX_inv @ C_XY, k=self.ncp)
+        u, v = u.real, v.real
+        idx = np.argsort(u)[::-1]
+        self.eig_ = u[idx]
+        print("Computing U and V")
+        self.V_ = v[:, idx]
+        self.U_ = C_XX_inv @ C_XY @ self.V_
+        if self.ncp is not None:
+            self.V_ = self.V_[:, :self.ncp]
+
+    def fit_transform(self, X, Y):
+        """
+        Fit the OPLS model to the given input and target data and transform the input data.
+
+        Parameters:
+            X (array-like): Input data of shape (n_samples, n_features).
+            Y (array-like): Target data of shape (n_samples,).
+            max_iter (int): Maximum number of iterations for optimization.
+            delta (float): Convergence criterion.
+
+        Returns:
+            X_transformed (array-like): Transformed data of shape (n_samples, n_components).
+        """
+        self.fit(X, Y)
+        return self.transform(X)
+
+    def predict(self, X):
+        """
+        Predict target values for the input data X.
+
+        Parameters:
+            X (array-like): Input data of shape (n_samples, n_features).
+
+        Returns:
+            Y_pred (array-like): Predicted target values of shape (n_samples,).
+        """
+        X_transform = self.transform(X)
+        print(X_transform.shape, self.U_.shape, self.V_.shape)
+        return X_transform @ self.V_
 
     def score(self, X, Y):
         """
