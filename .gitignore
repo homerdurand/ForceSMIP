@@ -107,3 +107,8 @@ weights/Anchor_OPLS_precip_weights_stability_n1000_coarse24.pkl
 weights/Anchor_OPLS_precip_weights_stability_n1500_coarse6.pkl
 weights/Anchor_OPLS_precip_weights_stability_n1000_coarse24.pkl
 weights/Anchor_OPLS_precip_weights_stability_n1500_coarse6.pkl
+data/CanESM5_psl.nc
+data/CESM2_psl.nc
+data/MIROC-ES2L_psl.nc
+data/MIROC6_psl.nc
+data/MPI-ESM1-2-LR_psl.nc
