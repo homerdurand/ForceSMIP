@@ -99,3 +99,11 @@ data/CESM2_pr.nc
 data/MIROC-ES2L_pr.nc
 data/MIROC6_pr.nc
 data/MPI-ESM1-2-LR_pr.nc
+Results/R2_pr_anchor_OPLS1_stability_coarse6.pdf
+Results/R2_pr_anchor_OPLS1_stability_coarse24.pdf
+Results/R2_pr_anchor_OPLS5_stability_coarse6.pdf
+Results/R2_pr_anchor_OPLS10000_stability_coarse24.pdf
+weights/Anchor_OPLS_precip_weights_stability_n1000_coarse24.pkl
+weights/Anchor_OPLS_precip_weights_stability_n1500_coarse6.pkl
+weights/Anchor_OPLS_precip_weights_stability_n1000_coarse24.pkl
+weights/Anchor_OPLS_precip_weights_stability_n1500_coarse6.pkl
